@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kota Ini Tak Sama Tanpa Mu 💖 - Happy Birthday</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Poppins:wght@300;400;500;600&family=Sacramento&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#FDFBF7',
+                        rosegold: '#B76E79',
+                        softrose: '#F4E3E3',
+                        softpink: '#FBE8E7',
+                        warmgold: '#D4AF37',
+                        deeprose: '#A3485E'
+                    },
+                    fontFamily: {
+                        sans: ['"Poppins"', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                        handwriting: ['"Sacramento"', 'cursive']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Animations & Styles */
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            background: linear-gradient(135deg, #FDFBF7 0%, #FBE8E7 50%, #F4E3E3 100%);
+            overflow-x: hidden;
+        }
+
+        /* Canvas Particle Layer */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Candle Flame Animation */
+        .flame {
+            background-color: #FFDE59;
+            border-radius: 100% 0 100% 100%;
+            box-shadow: 0 0 15px #FF914D, 0 0 25px #FFDE59;
+            transform: rotate(-45deg);
+            animation: flicker 0.9s infinite alternate;
+        }
+
+        @keyframes flicker {
+            0% { transform: rotate(-45deg) scale(1); opacity: 0.9; }
+            100% { transform: rotate(-43deg) scale(1.15); opacity: 1; box-shadow: 0 0 20px #FF914D, 0 0 30px #FFDE59; }
+        }
+
+        /* Floating Balloon / Heart Animation */
+        .floating-element {
+            animation: floatSlow 6s ease-in-out infinite;
+        }
+        .floating-delayed {
+            animation: floatSlow 7s ease-in-out infinite 2s;
+        }
+
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-18px) rotate(4deg); }
+        }
+
+        /* Polaroid Flip Card 3D */
+        .flip-card {
+            perspective: 1000px;
+        }
+        .flip-card-inner {
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            backface-visibility: hidden;
+        }
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+
+        /* Envelope Animation */
+        .envelope-wrapper {
+            perspective: 1000px;
+        }
+        .envelope {
+            position: relative;
+            width: 100%;
+            max-width: 460px;
+            height: 270px;
+            background: #E8B4B8;
+            border-radius: 14px;
+            box-shadow: 0 15px 35px rgba(183, 110, 121, 0.25);
+            cursor: pointer;
+            transition: transform 0.4s ease;
+        }
+        .envelope:hover {
+            transform: translateY(-6px);
+        }
+        .flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 135px;
+            background: #D8969C;
+            clip-path: polygon(0 0, 50% 100%, 100% 0);
+            transform-origin: top;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 3;
+        }
+        .envelope.open .flap {
+            transform: rotateX(180deg);
+            z-index: 1;
+        }
+
+        /* Audio Visualizer Waves */
+        .bar {
+            width: 3.5px;
+            height: 16px;
+            background-color: #B76E79;
+            border-radius: 9999px;
+            animation: soundwave 1.2s ease-in-out infinite;
+        }
+        .bar:nth-child(2) { animation-delay: 0.2s; }
+        .bar:nth-child(3) { animation-delay: 0.4s; }
+        .bar:nth-child(4) { animation-delay: 0.1s; }
+
+        @keyframes soundwave {
+            0%, 100% { height: 6px; }
+            50% { height: 22px; }
+        }
+        .paused .bar {
+            animation-play-state: paused;
+            height: 6px !important;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FBE8E7;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #E8B4B8;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="text-gray-800 relative font-sans">
+
+    <!-- Background Particle Canvas (Petals & Floating Hearts) -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Aesthetic Floating Music Player Bar -->
+    <header class="fixed top-4 right-4 z-50">
+        <div class="bg-white/85 backdrop-blur-md px-4 py-2.5 rounded-full shadow-lg border border-rosegold/20 flex items-center gap-3">
+            <button id="play-btn" onclick="toggleAudio()" class="w-10 h-10 rounded-full bg-rosegold text-white flex items-center justify-center shadow-md hover:scale-105 transition-transform">
+                <i id="play-icon" class="fas fa-play ml-0.5"></i>
+            </button>
+            <div class="hidden sm:block">
+                <p class="text-xs font-semibold text-gray-800 tracking-wide">Kota Ini Tak Sama Tanpa Mu</p>
+                <p class="text-[10px] text-rosegold font-medium">Nadhif Basalamah - Penjaga Hati ✨</p>
+            </div>
+            
+            <!-- Audio Equalizer -->
+            <div id="visualizer" class="flex items-center gap-1 h-6 px-1 paused">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+
+            <!-- Custom Upload Button -->
+            <label class="cursor-pointer text-gray-400 hover:text-rosegold text-xs ml-1 transition-colors" title="Upload Musik Sendiri (.mp3)">
+                <i class="fas fa-upload"></i>
+                <input type="file" id="audio-upload" accept="audio/*" class="hidden" onchange="handleAudioUpload(event)">
+            </label>
+        </div>
+    </header>
+
+    <!-- Audio Player -->
+    <audio id="bg-music" loop>
+        <source src="lagu.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Main Container -->
+    <main class="relative z-10 max-w-4xl mx-auto px-4 py-10 space-y-24">
+
+        <!-- HERO SECTION -->
+        <section class="min-h-[85vh] flex flex-col justify-center items-center text-center relative pt-8">
+            <!-- Floating Elements -->
+            <div class="absolute -top-4 left-6 md:left-12 floating-element text-5xl opacity-80 select-none">🌸</div>
+            <div class="absolute top-16 right-8 md:right-16 floating-delayed text-5xl opacity-80 select-none">🕊️</div>
+            <div class="absolute bottom-12 left-10 floating-element text-4xl opacity-70 select-none">✨</div>
+
+            <!-- Profile Avatar / Photos -->
+            <div class="relative mb-6">
+                <div class="w-36 h-36 md:w-44 md:h-44 rounded-full p-2 bg-gradient-to-tr from-rosegold via-softrose to-cream shadow-2xl animate-bounce" style="animation-duration: 3.5s;">
+                    <div class="w-full h-full rounded-full overflow-hidden border-4 border-white bg-white flex items-center justify-center">
+                        <img src="princess.jpg" 
+                             alt="Birthday Princess" 
+                             class="w-full h-full object-cover"
+                             onerror="this.onerror=null; this.src='https://placehold.co/400x400/F4E3E3/B76E79?text=Princess+🌸';">
+                    </div>
+                </div>
+                <span class="absolute bottom-1 right-1 bg-white p-2 rounded-full shadow-md text-xl">👑</span>
+            </div>
+
+            <!-- Main Title & Quote -->
+            <span class="inline-block px-4 py-1 rounded-full bg-softpink text-rosegold font-medium text-xs md:text-sm mb-4 tracking-widest uppercase border border-rosegold/20">
+                Happy Birthday My Special Someone, <br>
+                Ain Rosma Zaizakarani Binti Matan 🎉
+            </span>
+            
+            <h1 class="text-4xl md:text-6xl font-serif font-bold text-gray-800 tracking-tight leading-tight mb-4">
+                Kota Ini Tak Sama <br class="md:hidden"/>
+                <span class="font-handwriting text-5xl md:text-7xl text-rosegold block mt-2">
+                    Tanpa Kehadiranmu 💕
+                </span>
+            </h1>
+
+            <p class="text-gray-600 max-w-lg text-sm md:text-base mb-8 leading-relaxed font-light">
+                Di sudut kota manapun aku berada, suasananya takkan pernah terasa selengkap dan seindah ini tanpa dirimu. Selamat ulang tahun, cintaku! ✨
+            </p>
+
+            <a href="#cake-section" class="inline-flex items-center gap-2 text-xs md:text-sm font-medium text-rosegold hover:text-deeprose transition-colors">
+                <span>Make a Wish</span>
+                <i class="fas fa-chevron-down animate-bounce text-xs"></i>
+            </a>
+        </section>
+
+        <!-- CAKE & BLOW CANDLE SECTION -->
+        <section id="cake-section" class="bg-white/75 backdrop-blur-md rounded-3xl p-8 md:p-12 shadow-xl border border-white text-center relative overflow-hidden">
+            <h2 class="text-2xl md:text-3xl font-serif font-bold text-gray-800 mb-2">Make a Wish & Blow the Candle! 🎂</h2>
+            <p class="text-gray-500 text-xs md:text-sm mb-8">Klik pada nyala api lilin untuk meniupnya dan membunyikan konfeti!</p>
+
+            <!-- Interactive Cake -->
+            <div class="relative w-64 h-64 mx-auto flex flex-col items-center justify-end pb-4">
+                
+                <!-- Candle Flame -->
+                <div id="candle-container" onclick="blowCandle()" class="cursor-pointer group flex flex-col items-center mb-1 z-20 transition-transform hover:scale-110">
+                    <div id="flame" class="flame w-5 h-7 mb-1"></div>
+                    <div class="w-3 h-12 bg-gradient-to-b from-rosegold to-softrose rounded-t-sm shadow-sm relative overflow-hidden">
+                        <div class="absolute inset-0 bg-white/30 w-1/2"></div>
+                    </div>
+                </div>
+
+                <!-- Cake Structure -->
+                <div class="w-36 h-12 bg-softrose rounded-t-2xl relative shadow-inner flex items-center justify-center border-b-4 border-rosegold/30">
+                    <div class="absolute -top-2 inset-x-0 flex justify-around">
+                        <span class="text-xs">🌸</span>
+                        <span class="text-xs">🍓</span>
+                        <span class="text-xs">🌸</span>
+                        <span class="text-xs">🍓</span>
+                    </div>
+                    <span class="text-[10px] font-bold text-rosegold tracking-widest">SWEET AGE</span>
+                </div>
+                <div class="w-48 h-14 bg-cream relative shadow-md flex items-center justify-center border-b-4 border-amber-100">
+                    <div class="w-full h-3 bg-softrose absolute top-0"></div>
+                </div>
+                <div class="w-60 h-16 bg-rosegold/80 rounded-b-xl relative shadow-lg flex items-center justify-center">
+                    <div class="w-full h-4 bg-white/30 absolute top-0"></div>
+                    <div class="text-white text-xs font-serif tracking-widest font-semibold">HAPPY BIRTHDAY</div>
+                </div>
+                <div class="w-64 h-3 bg-gray-200 rounded-full shadow-md mt-1"></div>
+            </div>
+
+            <!-- Pop-up Wish Message -->
+            <div id="wish-message" class="hidden mt-6 p-4 bg-softpink/80 border border-rosegold/30 rounded-2xl text-deeprose font-medium text-sm animate-fade-in">
+                ✨ Semoga semua impian dan cita-citamu terkabul di usia yang baru ini. I love you so much! 🫶💗
+            </div>
+        </section>
+
+        <!-- LOVE LETTER SECTION -->
+        <section class="flex flex-col items-center">
+            <div class="text-center mb-8">
+                <span class="text-xs font-bold uppercase tracking-widest text-rosegold bg-softpink px-3 py-1 rounded-full border border-rosegold/20">Surat Cinta</span>
+                <h2 class="text-3xl font-serif font-bold text-gray-800 mt-2">Pesan Dari Hatiku 💌</h2>
+                <p class="text-gray-500 text-xs md:text-sm">Klik amplop di bawah ini untuk membaca surat</p>
+            </div>
+
+            <div class="envelope-wrapper w-full flex justify-center">
+                <div id="envelope" onclick="openEnvelope()" class="envelope flex items-center justify-center">
+                    <div class="flap"></div>
+                    <div class="text-center z-10 text-white font-medium flex flex-col items-center gap-2">
+                        <i class="fas fa-heart text-3xl animate-pulse text-white"></i>
+                        <span class="text-xs font-semibold tracking-wider">For My Beloved</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Revealed Letter Modal -->
+            <div id="letter-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+                <div class="bg-cream max-w-lg w-full rounded-3xl p-6 md:p-8 shadow-2xl border-4 border-softrose relative max-h-[85vh] overflow-y-auto">
+                    <button onclick="closeEnvelope()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-softpink text-rosegold flex items-center justify-center font-bold hover:bg-rosegold hover:text-white transition-colors">✕</button>
+                    
+                    <div class="text-center mb-6">
+                        <span class="text-3xl">🌸</span>
+                        <h3 class="font-serif text-2xl text-deeprose font-bold mt-1">Happy Birthday, Sayangku</h3>
+                    </div>
+
+                    <div class="font-handwriting text-2xl md:text-3xl text-gray-700 leading-relaxed space-y-4">
+                        <p>
+                            Seperti lirik lagu <i>"Kota Ini Tak Sama Tanpa Mu"</i>, tempat mana pun yang aku kunjungi terasa hampa jika tanpa senyuman dan hadirmu.
+                        </p>
+                        <p>
+                            Terima kasih sudah menjadi rumah, tempat berpulang, dan penjaga hatiku yang paling menenangkan. Semoga di usiamu yang baru ini, kamu selalu diberi kesehatan, kebahagiaan melimpah, dan segala hal manis yang layak kamu dapatkan.
+                        </p>
+                        <p>
+                            Aku akan selalu ada di sisimu, mendukung impianmu dan mencintaimu setiap hari.
+                        </p>
+                    </div>
+
+                    <div class="mt-8 text-right font-handwriting text-3xl text-rosegold font-bold">
+                        Dengan Cintaku,<br>
+                        ❤️ Gilang Ardiansyah
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MEMORY POLAROID CAROUSEL / GRID -->
+        <section class="space-y-6">
+            <div class="text-center">
+                <span class="text-xs font-bold uppercase tracking-widest text-rosegold bg-softpink px-3 py-1 rounded-full border border-rosegold/20">Galeri Kenangan</span>
+                <h2 class="text-3xl font-serif font-bold text-gray-800 mt-2">Momen Indah Bersamamu 📸</h2>
+                <p class="text-gray-500 text-xs md:text-sm">Hover / sentuh foto untuk melihat catatan kecil di baliknya!</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Card 1 -->
+                <div class="flip-card h-80">
+                    <div class="flip-card-inner relative w-full h-full shadow-lg rounded-2xl">
+                        <div class="flip-card-front absolute inset-0 bg-white p-4 rounded-2xl flex flex-col justify-between border border-gray-100">
+                            <div class="w-full h-56 rounded-xl overflow-hidden bg-gray-100">
+                                <img src="awal.jpg" alt="Memory 1" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/400x500/F4E3E3/B76E79?text=Momen+Pertama+💕';">
+                            </div>
+                            <p class="font-handwriting text-2xl text-center text-gray-700 font-bold">Pandangan Pertama ✨</p>
+                        </div>
+                        <div class="flip-card-back absolute inset-0 bg-gradient-to-br from-rosegold to-deeprose p-6 rounded-2xl text-white flex flex-col items-center justify-center text-center">
+                            <i class="fas fa-heart text-3xl mb-3 opacity-80"></i>
+                            <h4 class="font-serif font-bold text-lg mb-2">Awal Mula</h4>
+                            <p class="text-xs text-pink-100 leading-relaxed font-light">
+                                "Saat pertama kali melihat senyummu, aku tahu kota ini takkan pernah sama lagi tanpa hadirmu."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="flip-card h-80">
+                    <div class="flip-card-inner relative w-full h-full shadow-lg rounded-2xl">
+                        <div class="flip-card-front absolute inset-0 bg-white p-4 rounded-2xl flex flex-col justify-between border border-gray-100">
+                            <div class="w-full h-56 rounded-xl overflow-hidden bg-gray-100">
+                                <img src="senyum.jpg" alt="Memory 2" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/400x500/F4E3E3/B76E79?text=Senyum+Manismu+😄';">
+                            </div>
+                            <p class="font-handwriting text-2xl text-center text-gray-700 font-bold">Senyum Terindah 🥺</p>
+                        </div>
+                        <div class="flip-card-back absolute inset-0 bg-gradient-to-br from-softrose to-rosegold p-6 rounded-2xl text-gray-800 flex flex-col items-center justify-center text-center">
+                            <i class="fas fa-smile text-3xl mb-3 text-rosegold"></i>
+                            <h4 class="font-serif font-bold text-lg mb-2 text-deeprose">Penawar Lelah</h4>
+                            <p class="text-xs text-gray-700 leading-relaxed font-light">
+                                "Tawamu adalah hal favoritku di dunia ini. Selalu bawa kebahagiaan itu kemanapun kamu pergi."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="flip-card h-80">
+                    <div class="flip-card-inner relative w-full h-full shadow-lg rounded-2xl">
+                        <div class="flip-card-front absolute inset-0 bg-white p-4 rounded-2xl flex flex-col justify-between border border-gray-100">
+                            <div class="w-full h-56 rounded-xl overflow-hidden bg-gray-100">
+                                <img src="bersama.jpg" alt="Memory 3" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/400x500/F4E3E3/B76E79?text=Masa+Depan+🌸';">
+                            </div>
+                            <p class="font-handwriting text-2xl text-center text-gray-700 font-bold">Petualangan Berdua ✈️</p>
+                        </div>
+                        <div class="flip-card-back absolute inset-0 bg-gradient-to-br from-rosegold to-deeprose p-6 rounded-2xl text-white flex flex-col items-center justify-center text-center">
+                            <i class="fas fa-compass text-3xl mb-3 opacity-80"></i>
+                            <h4 class="font-serif font-bold text-lg mb-2">Harapan Bersama</h4>
+                            <p class="text-xs text-pink-100 leading-relaxed font-light">
+                                "Mari kita ukir lebih banyak cerita manis di setiap sudut kota dan perjalanan di masa depan."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="text-center py-8 border-t border-rosegold/20">
+            <p class="text-gray-600 text-sm font-medium">Dibuat khusus dengan ❤️ untuk hari istimewamu</p>
+            <p class="text-xs text-rosegold font-serif mt-1">Kota Ini Tak Sama Tanpa Mu • Forever & Always</p>
+        </footer>
+
+    </main>
+    
+    <!-- JavaScript Logic -->
+    <script>
+        // 1. PARTICLES ANIMATION (Petals & Floating Hearts)
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class FallingParticle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = -20;
+                this.size = Math.random() * 12 + 8;
+                this.speedY = Math.random() * 1.2 + 0.6;
+                this.speedX = Math.random() * 1 - 0.5;
+                this.opacity = Math.random() * 0.6 + 0.3;
+                this.type = Math.random() > 0.5 ? 'petal' : 'heart';
+            }
+            update() {
+                this.y += this.speedY;
+                this.x += Math.sin(this.y * 0.02) + this.speedX;
+                if (this.y > canvas.height + 20) {
+                    this.y = -20;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.opacity;
+                ctx.font = `${this.size}px serif`;
+                if (this.type === 'petal') {
+                    ctx.fillText('🌸', this.x, this.y);
+                } else {
+                    ctx.fillText('💖', this.x, this.y);
+                }
+                ctx.restore();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < 30; i++) {
+                particles.push(new FallingParticle());
+            }
+        }
+        initParticles();
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+       // 2. LOGIKA AUDIO KONFETI LOKAL (AMAIN DARI BUG DOWNLOAD.BIN)
+const confettiSound = new Audio('pop.mp3');
+
+function playConfettiSound() {
+    // Reset durasi audio ke 0 agar bisa di-play berulang kali dengan cepat
+    confettiSound.currentTime = 0;
+    confettiSound.play().catch(err => {
+        console.log("Audio confetti belum di-play atau file confetti.mp3 belum ditemukan:", err);
+    });
+}
+
+        // 3. CANDLE BLOW & CONFETTI LOGIC
+        let candleBlown = false;
+        function blowCandle() {
+            if (candleBlown) return;
+            candleBlown = true;
+            
+            document.getElementById('flame').style.display = 'none';
+            document.getElementById('wish-message').classList.remove('hidden');
+
+            // Bunyikan Suara Konfeti Pop!
+            playConfettiSound();
+
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 120,
+                    spread: 80,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        // 4. ENVELOPE / LOVE LETTER MODAL LOGIC
+        function openEnvelope() {
+            document.getElementById('letter-modal').classList.remove('hidden');
+
+            // Bunyikan Suara Konfeti Pop saat amplop dibuka!
+            playConfettiSound();
+
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 40,
+                    spread: 60,
+                    origin: { y: 0.5 }
+                });
+            }
+        }
+
+        function closeEnvelope() {
+            document.getElementById('letter-modal').classList.add('hidden');
+        }
+
+        // 5. MUSIC PLAYER LOGIC (SAFE FROM DOWNLOAD.BIN BUGS)
+        const bgMusic = document.getElementById('bg-music');
+        const playIcon = document.getElementById('play-icon');
+        const visualizer = document.getElementById('visualizer');
+        let isPlaying = false;
+
+        function toggleAudio() {
+            if (isPlaying) {
+                bgMusic.pause();
+                playIcon.classList.remove('fa-pause');
+                playIcon.classList.add('fa-play');
+                visualizer.classList.add('paused');
+            } else {
+                bgMusic.play().then(() => {
+                    playIcon.classList.remove('fa-play');
+                    playIcon.classList.add('fa-pause');
+                    visualizer.classList.remove('paused');
+                }).catch(err => {
+                    console.log("Audio play error", err);
+                    alert('Tidak dapat memutar audio secara otomatis. Silakan upload file lagu (.mp3) secara manual melalui ikon upload 📤 di pojok kanan atas.');
+                });
+            }
+            isPlaying = !isPlaying;
+        }
+
+        function handleAudioUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const objectUrl = URL.createObjectURL(file);
+                bgMusic.src = objectUrl;
+                isPlaying = false;
+                toggleAudio();
+            }
+        }
+    </script>
+</body>
+</html>
